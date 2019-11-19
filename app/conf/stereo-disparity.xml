@@ -12,7 +12,7 @@
 
     <!-- ======== MODULES ======== -->
     <module>
-        <name>stereo-disparity</name>
+        <name>stereDisparity</name>
         <parameters></parameters>
         <node>icub-b1</node>
     </module>
