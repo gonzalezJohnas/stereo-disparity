@@ -2,20 +2,20 @@ cmake_minimum_required(VERSION 3.15)
 set(CMAKE_CXX_STANDARD 14)
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread")
 set(KEYWORD stereo_disparity)
+set(YARP_INCLUDE_CV /home/jonas/yarp/src/libYARP_cv/include)
 project($KEYWORD)
 
 
 find_package(OpenCV REQUIRED)
 find_package(YARP  REQUIRED COMPONENTS sig cv )
+
 FIND_PACKAGE(ICUBcontrib REQUIRED)
 
-list(APPEND CMAKE_MODULE_PATH ${YARP_MODULE_PATH})
 list(APPEND CMAKE_MODULE_PATH ${ICUB_MODULE_PATH})
 list(APPEND CMAKE_MODULE_PATH ${ICUBCONTRIB_MODULE_PATH})
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 
-include(YarpInstallationHelpers)
 include(ICUBcontribHelpers)
 include(ICUBcontribOptions)
 
@@ -25,6 +25,7 @@ set(ICUB_APPLICATIONS_PREFIX "$ENV{ICUB_ROOT}" CACHE PATH "Application path pref
 
 include_directories(${KEYWORD}
         ${OpenCV_INCLUDE_DIRS}
+        ${YARP_INCLUDE_CV}
         )
 
 # Search for source code.
