@@ -1,0 +1,49 @@
+<application>
+
+    <!-- ======== GENERAL INFO ======== -->
+
+    <name>Stereo-disparity</name>
+    <description>App to compute  stereo-disparity</description>
+    <version>2.0</version>
+
+    <authors>
+        <author email="jonas.gonzalez@iit.it"> Jonas Gonzalez </author>
+    </authors>
+
+    <!-- ======== MODULES ======== -->
+    <module>
+        <name>stereo-disparity</name>
+        <parameters></parameters>
+        <node>icub-b1</node>
+    </module>
+
+
+
+    <module>
+        <name>yarpview</name>
+        <parameters>--name /disparityView</parameters>
+        <node>icub16</node>
+    </module>
+
+    <!-- ======== CONNECTIONS ======== -->
+
+    <!-- Cameras connections -->
+    <connection>
+        <from>/icub/cam/left/out</from>
+        <to>/stereoDisparity/imageLeft:i</to>
+        <protocol>tcp</protocol>
+    </connection>
+
+    <connection>
+        <from>/icub/cam/right/out</from>
+        <to>/stereoDisparity/imageRight:i</to>
+        <protocol>tcp</protocol>
+    </connection>
+
+    <connection>
+        <from>/stereoDisparity/disparity:o</from>
+        <to>/disparityView</to>
+        <protocol>tcp</protocol>
+    </connection>
+
+</application>

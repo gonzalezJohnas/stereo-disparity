@@ -1,13 +1,15 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.9)
 set(CMAKE_CXX_STANDARD 14)
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread")
 set(KEYWORD stereo_disparity)
-set(YARP_INCLUDE_CV /home/jonas/yarp/src/libYARP_cv/include)
+
 project($KEYWORD)
 
 
 find_package(OpenCV REQUIRED)
 find_package(YARP  REQUIRED COMPONENTS sig cv )
+
+set(YARP_INCLUDE_CV ${YARP_DIR}/../src/libYARP_cv/include CACHE PATH "Yarp cv include dir")
 
 FIND_PACKAGE(ICUBcontrib REQUIRED)
 

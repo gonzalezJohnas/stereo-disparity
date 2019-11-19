@@ -16,46 +16,50 @@
 
     bool DisparityModule::updateModule()
     {
-        left_img = imageLeftPortIn.read(true);
-        right_img = imageRightPortIn.read(true);
+            if(imageLeftPortIn.getInputCount() && imageRightPortIn.getInputCount()){
+                left_img = imageLeftPortIn.read(true);
+                right_img = imageRightPortIn.read(true);
 
 
 
-        left_mat = yarp::cv::toCvMat(*left_img);
-        right_mat = yarp::cv::toCvMat(*right_img);
+                left_mat = yarp::cv::toCvMat(*left_img);
+                right_mat = yarp::cv::toCvMat(*right_img);
 
-        left_for_matcher  = left_mat.clone();
-        right_for_matcher = right_mat.clone();
-
-
-
-
-        left_matcher-> compute(left_for_matcher, right_for_matcher,left_disp);
-        right_matcher->compute(right_for_matcher,left_for_matcher, right_disp);
-
-        //! [filtering]
-
-        wls_filter->filter(left_disp,left_mat,filtered_disp,right_disp);
-        //! [filtering]
-        conf_map = wls_filter->getConfidenceMap();
-
-        Mat left_disp_resized;
-        resize(left_disp,left_disp_resized,left_mat.size());
-
-
-        Mat filtered_disp_vis;
-        getDisparityVis(filtered_disp,filtered_disp_vis,1);
+                left_for_matcher  = left_mat.clone();
+                right_for_matcher = right_mat.clone();
 
 
 
-        if(imageDisparityPortOut.getOutputCount()){
-            ImageOf<PixelMono > &out_disparity = imageDisparityPortOut.prepare();
-            out_disparity = yarp::cv::fromCvMat<PixelMono>(filtered_disp_vis);
-            imageDisparityPortOut.write();
+
+                left_matcher-> compute(left_for_matcher, right_for_matcher,left_disp);
+                right_matcher->compute(right_for_matcher,left_for_matcher, right_disp);
+
+                //! [filtering]
+
+                wls_filter->filter(left_disp,left_mat,filtered_disp,right_disp);
+                //! [filtering]
+                conf_map = wls_filter->getConfidenceMap();
+
+                Mat left_disp_resized;
+                resize(left_disp,left_disp_resized,left_mat.size());
+
+
+                Mat filtered_disp_vis;
+                getDisparityVis(filtered_disp,filtered_disp_vis,1);
+
+
+
+                if(imageDisparityPortOut.getOutputCount()){
+                    ImageOf<PixelMono > &out_disparity = imageDisparityPortOut.prepare();
+                    out_disparity = yarp::cv::fromCvMat<PixelMono>(filtered_disp_vis);
+                    imageDisparityPortOut.write();
+                }
+
+
         }
 
-
         return true;
+
     }
 
     bool DisparityModule::respond(const yarp::os::Bottle& command, yarp::os::Bottle& reply)
@@ -222,14 +226,21 @@
 
     bool DisparityModule::interruptModule()
     {
-        std::cout << "Interrupting your module, for port cleanup" << '\n';
+        yInfo("Interrupting your module, for port cleanup");
+        imageLeftPortIn.interrupt();
+        imageRightPortIn.interrupt();
+        handlerPort.interrupt();
+
         return true;
     }
 
     bool DisparityModule::close()
     {
         // optional, close port explicitly
-        std::cout << "Calling close function\n";
+        yInfo("Closing module, Ports");
+        imageDisparityPortOut.close();
+        imageLeftPortIn.close();
+        imageRightPortIn.close();
         handlerPort.close();
         return true;
     }
